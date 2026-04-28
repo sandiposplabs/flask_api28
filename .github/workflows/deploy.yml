@@ -24,18 +24,24 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      # FIXED: correct ACR login
       - name: Login to ACR
         run: |
-          az acr login --name ${{ env.AZURE_CONTAINER_REGISTRY }}
+          az acr login --name badaracregistry
 
-      - name: Build and push Docker image
+      - name: Build Docker image
         run: |
-          docker build -t ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
-          docker push ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker build -t $AZURE_CONTAINER_REGISTRY/$IMAGE_NAME:${{ github.sha }} .
 
+      - name: Push Docker image
+        run: |
+          docker push $AZURE_CONTAINER_REGISTRY/$IMAGE_NAME:${{ github.sha }}
+
+      # IMPORTANT FIX: force new revision update
       - name: Deploy to Azure Container Apps
         run: |
           az containerapp update \
-            --name ${{ env.AZURE_CONTAINER_APP_NAME }} \
-            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
-            --image ${{ env.AZURE_CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            --name $AZURE_CONTAINER_APP_NAME \
+            --resource-group $AZURE_RESOURCE_GROUP \
+            --image $AZURE_CONTAINER_REGISTRY/$IMAGE_NAME:${{ github.sha }} \
+            --set-env-vars "RESTART_TRIGGER=${{ github.sha }}"
