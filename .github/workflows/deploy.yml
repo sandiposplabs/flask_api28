@@ -7,8 +7,8 @@ on:
 
 env:
   AZURE_CONTAINER_APP_NAME: flask-api-app
-  AZURE_RESOURCE_GROUP: my-resource-group
-  AZURE_CONTAINER_REGISTRY: myregistry.azurecr.io
+  AZURE_RESOURCE_GROUP: rg-badar
+  AZURE_CONTAINER_REGISTRY: badaracregistry.azurecr.io
   IMAGE_NAME: flask-api
 
 jobs:
