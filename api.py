@@ -43,7 +43,7 @@ def db_test():
         conn.close()
 
         return jsonify({
-            "status": "succccess",
+            "status": "succccccess",
             "db_version": version[0]
         })
 
